@@ -1,0 +1,50 @@
+#!/usr/bin/env node
+
+const { program } = require('commander')
+const chalk = require('chalk');
+
+const cleanArgs = cmdObj => {
+  const args = {}
+  cmdObj.options.forEach(o => {
+    const key = o.long.slice(2)
+    if (cmdObj[key]) args[key] = cmdObj[key]
+  })
+  return args
+}
+
+program
+  .command('create <app-name>') //配置命令
+  .description('create a new project')
+  .option('-f, --force', 'overwrite target directory if it exists')
+  .action((projectName, cmdObj) => {
+    // 调用模块
+    require('../lib/create.js')(projectName, cleanArgs(cmdObj))
+  })
+
+program
+  .command('config [value]')
+  .description('inspect and modify the config')
+  .option('-g, --get <path>', 'get value from option')
+  .option('-s, --set <path> <value>', 'set value from option')
+  .option('-d, --delete <path>', 'delete option from config')
+  .action((value, cmdObj) => {
+    console.log(value, cleanArgs(cmdObj))
+  })
+
+program
+  .command('ui')
+  .description('start and open zcl-cli web ui')
+  .option('-p, --port <port>', 'Port used for UI Server')
+  .action(cmdObj => {
+    console.log(cleanArgs(cmdObj))
+    console.log(cmdObj)
+  })
+
+
+// 版本号信息
+program
+  .version(`zcl-cli@${require('../package.json').version}`, '-v, --version', 'output the current version')
+  .usage(`<command> [option1]`)
+
+program.parse(process.argv)
+
