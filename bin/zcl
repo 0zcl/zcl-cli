@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 const { program } = require('commander')
-const chalk = require('chalk');
 
 const cleanArgs = cmdObj => {
   const args = {}
@@ -13,7 +12,8 @@ const cleanArgs = cmdObj => {
 }
 
 program
-  .command('create <app-name>') //配置命令
+  .command('init <app-name>')
+  .alias('create')
   .description('create a new project')
   .option('-f, --force', 'overwrite target directory if it exists')
   .action((projectName, cmdObj) => {
@@ -37,14 +37,14 @@ program
   .option('-p, --port <port>', 'Port used for UI Server')
   .action(cmdObj => {
     console.log(cleanArgs(cmdObj))
-    console.log(cmdObj)
   })
 
 
 // 版本号信息
 program
-  .version(`zcl-cli@${require('../package.json').version}`, '-v, --version', 'output the current version')
-  .usage(`<command> [option1]`)
+  .version(`zcl@${require('../package.json').version}`, '-v, -V, --version', 'output the current version')
+  .name('zcl')
+  .usage('[options]')
 
 program.parse(process.argv)
 
