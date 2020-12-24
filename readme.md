@@ -7,3 +7,7 @@
 zcl init app-name
 zcl create app-name
 ```
+
+待优化：
+1、下载文件目录、版本等信息要用户输入形成。输入信息合并到下载模版的package.json (完成)
+2、快速删除已下载项目 (完成)
