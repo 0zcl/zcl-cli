@@ -19,7 +19,7 @@ async function getProjectAskInfo(projectName) {
   return await inquirer.prompt(askInfos)
 }
 
-async function getAutoInstallType(projectName) {
+async function getAutoInstallType() {
   const askInfos = [{
     type: 'list',
     message: '请选择更新npm工具',

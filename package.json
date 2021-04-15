@@ -1,7 +1,7 @@
 {
   "name": "zcl-cli",
   "version": "1.0.0",
-  "description": "",
+  "description": "zcl脚手架",
   "main": "./bin/zcl",
   "bin": {
     "zcl": "./bin/zcl"
@@ -12,6 +12,10 @@
   },
   "scripts": {
     "lint": "eslint lib/**/* --ext .js,.ts",
+    "next": "npm run build && npm set registry http://verdaccio.61info.com && npm version prerelease --preid=next && npm publish --tag=next && git push",
+    "patch": "npm run build && npm set registry http://verdaccio.61info.com && npm version patch && npm publish && git push",
+    "minor": "npm run build && npm set registry http://verdaccio.61info.com && npm version minor && npm publish && git push",
+    "major": "npm run build && npm set registry http://verdaccio.61info.com && npm version major && npm publish && git push",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "husky": {

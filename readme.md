@@ -2,10 +2,12 @@
 
 目的：快速创建项目模板，其他项目组也可以通过该工具维护自己的项目模板
 功能：持续添加中，提高开发效率
-1. 下载模版
+1. 下载模版。
   * 移动端UI组件库：zcl-ui
   * 移动端h5多页面模版：h5_template
-2. 
+2. zcl -v 查看脚手架版本信息
+3. 下载移动端多页面的 page 模版
+  * 下载目录名为invoice的页面模版：zcl clone invoice --pageName pageTemplate
 
 ### 命令
 ```

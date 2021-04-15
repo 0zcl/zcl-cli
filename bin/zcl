@@ -1,8 +1,18 @@
 #!/usr/bin/env node
 
 const { program } = require('commander')
+const { checkRepeat } = require('../lib/check.js')
+const { checkArgsPrams } = require('../lib/utils')
+const Creator = require('../lib/Creator')
 
+/**
+ * 
+ * @param cmdObj 
+ * @returns 返回对象，命令行参数为key, value为true
+ */
 const cleanArgs = cmdObj => {
+  // console.log('options', cmdObj.options)
+  // console.log('cmdObj', cmdObj)
   const args = {}
   cmdObj.options.forEach(o => {
     const key = o.long.slice(2)
@@ -11,6 +21,32 @@ const cleanArgs = cmdObj => {
   return args
 }
 
+/**
+ * ```
+ * zcl clone abc --pageName zcl
+ * 输出：{ pageName: 'zcl' }
+ * ```
+ * @param cmdObj 
+ * @returns 
+ */
+const getParams = cmdObj => {
+  const paramsObj = {}
+  const argsObj = cleanArgs(cmdObj)
+  console.log('argsObj', argsObj)
+  for (let argsName in argsObj) {
+    const argsIndex = cmdObj.parent.args.indexOf(`--${argsName}`)
+    paramsObj[argsName] = cmdObj.parent.args[argsIndex + 1]
+  }
+  return paramsObj
+}
+
+// 版本号信息
+program
+  .version(`zcl@${require('../package.json').version}`, '-v, -V, --version', 'output the current version')
+  .name('zcl')
+  .usage('[options]')
+
+// 下载模版
 program
   .command('init <app-name>')
   .alias('create')
@@ -18,8 +54,29 @@ program
   .option('-f, --force', 'overwrite target directory if it exists')
   .action((projectName, cmdObj) => {
     // 调用模块
-    require('../lib/create.js')(projectName, cleanArgs(cmdObj))
+    checkRepeat(projectName, cleanArgs(cmdObj)).then(() => {
+      new Creator(projectName).create()
+    }).catch(e => {
+      console.log(e) // 选择cancel
+    })
   })
+
+program
+  .command('clone [name]')
+  .description('快速复制目录或文件。[name]: 复制的目录名或文件名；[pageName]: 要复制的内容')
+  .option('--pageName', 'clone file or direcotry form remote')
+  .option('-f, --force', 'overwrite target directory if it exists')
+  .action((name, cmdObj) => {
+    const paramsObj = getParams(cmdObj)
+    checkArgsPrams('pageName', paramsObj).then(() => {
+      return checkRepeat(name, cleanArgs(cmdObj))
+    }).then(() => {
+      new Creator(name).clone(paramsObj)
+    }).catch(e => {
+      console.log(e) // 选择cancel
+    })
+  })
+
 
 program
   .command('config [value]')
@@ -40,11 +97,6 @@ program
   })
 
 
-// 版本号信息
-program
-  .version(`zcl@${require('../package.json').version}`, '-v, -V, --version', 'output the current version')
-  .name('zcl')
-  .usage('[options]')
+  program.parse(process.argv)
 
-program.parse(process.argv)
 
